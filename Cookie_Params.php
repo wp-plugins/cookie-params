@@ -15,13 +15,13 @@ class Cookie_Params {
 		if ( is_admin() ) {
 			add_action( 'admin_menu', array( &$this, 'add_option_page' ) );  
 		} else {
-			add_action( 'wp_enqueue_scripts', array( &$this, 'add_js' ) );
 		}
 		if ( get_option( 'debug' ) == "On" ) {
-			add_action( 'wp_ajax_cookie_logic', array( &$this, 'debug' ) );
-			add_action( 'wp_ajax_nopriv_cookie_logic', array( &$this, 'debug' ) ); 
+			add_action( 'wp_ajax_debug', array( &$this, 'debug' ) );
+			add_action( 'wp_ajax_nopriv_debug', array( &$this, 'debug' ) ); 
 			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
 		}
+		add_action( 'wp_enqueue_scripts', array( &$this, 'add_js' ) );
 	}
 	
 	function CookieParams () {
@@ -32,31 +32,35 @@ class Cookie_Params {
 		$params = get_option( 'params' );
 		?>
 		<script type="text/javascript">
+
 			function getParameterByName(name) {
 				name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 				var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
 				results = regex.exec(location.search);
 				return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 			}
+
 			var checklist = '<?php echo $params; ?>'.split( ',' );
 			for ( i = 0; i < checklist.length; i++ ) { 
 				var check = getParameterByName( checklist[i] );
 				if ( check ) {
-					document.cookie=checklist[i] + "=" + check;
+					document.cookie=checklist[i] + '=' + check + "; path=/";
+					alert (checklist[i] + "=" + check);
 				}
 			}
+			var x = document.cookie;
+			console.log( x );
 		</script>
 		<?php
 	}
 
 	function enqueue_scripts () {
-			wp_enqueue_script( 'check', plugins_url( basename( __DIR__ ) . '/js/check.js' ), array( 'jquery' ) );
+			wp_enqueue_script( 'check', plugins_url( '/js/check.js', __FILE__ ), array( 'jquery' ) );
 			wp_localize_script( 'check', 'check', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 	}
 
 	function debug() {
 		print_r( $_COOKIE );
-		echo "From PHP";
 	}
 
 	function add_option_page() {
