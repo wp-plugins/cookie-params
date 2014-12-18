@@ -45,11 +45,8 @@ class Cookie_Params {
 				var check = getParameterByName( checklist[i] );
 				if ( check ) {
 					document.cookie=checklist[i] + '=' + check + "; path=/";
-					alert (checklist[i] + "=" + check);
 				}
 			}
-			var x = document.cookie;
-			console.log( x );
 		</script>
 		<?php
 	}
