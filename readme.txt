@@ -5,7 +5,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: plugin, caching, wp engine, cached, query string, url, url parameters, cookie, cookies, javascript, tracking
 Requires at least: 4.0.1
 Tested up to: 4.0.1
-Stable tag: 0.1
+Stable tag: 0.2
 License: GPLv2 or later
 
 Ever wanted to save the query string params from your advertising as Javascript cookies because your page is heavily cached? Well, now you can...
@@ -28,5 +28,7 @@ Ever wanted to save the query string params from your advertising as Javascript 
 1. Settings...
 
 == Changelog ==
+
+0.2 - Custom features
 
 0.1 - Initial release
