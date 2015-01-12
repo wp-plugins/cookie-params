@@ -17,7 +17,6 @@ class Cookie_Params {
 		if ( is_admin() ) {
 			add_action( 'admin_menu', array( &$this, 'add_option_page' ) );  
 		} else {
-			//add_action( 'wp_enqueue_scripts', array( &$this, str_replace( array( "\r", "\n" ), '', 'inline_js' ) ) );
 			add_action( 'wp_enqueue_scripts', array( &$this, 'inline_js' ) );
 		}
 		if ( get_option( $this->optid . '_option_02' ) == "On" ) {
@@ -35,7 +34,38 @@ class Cookie_Params {
 		$params = get_option( $this->optid . '_option_01' );
 		$add_cookies = get_option( $this->optid . '_option_03' );
 		$add_js = get_option( $this->optid . '_option_05' );
-		?><script type="text/javascript"> function getParameterByName(name) { name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]"); var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search); return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " ")); } var checklist = '<?php echo $params; ?>'.split( ',' ); for ( i = 0; i < checklist.length; i++ ) { var check = getParameterByName( checklist[i] ); if ( check ) { window[checklist[i]] = check; document.cookie=checklist[i] + '=' + check + "; path=/"; } } <?php if ( strlen( $add_cookies ) > 0 ) { ?> var add_cookies = '<?php echo $add_cookies; ?>'.split( ',' ); for ( i = 0; i < add_cookies.length; i++ ) { document.cookie=add_cookies[i] + "; path=/"; } <?php } ?> <?php if ( isset( $add_js ) ) { echo str_replace( array( "\r", "\n" ), '', $add_js ); } ?> </script> <?php
+		?><script type="text/javascript"> 
+				function getParameterByName(name) { 
+					name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]"); 
+					var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
+					return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " ")); 
+				} 
+				function getCookie(name) {
+						var name = name + "=";
+						var ca = document.cookie.split(';');
+						for(var i=0; i<ca.length; i++) {
+								var c = ca[i];
+								while (c.charAt(0)==' ') c = c.substring(1);
+								if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+						}
+						return "";
+				}
+				var checklist = '<?php echo $params; ?>'.split( ',' ); 
+				for ( i = 0; i < checklist.length; i++ ) {
+					var check = getParameterByName( checklist[i] );
+					if ( check ) { 
+						window[checklist[i]] = check;
+						document.cookie=checklist[i] + '=' + check + "; path=/";
+					} else {
+						window[checklist[i]] = getCookie( checklist[i] );
+					}
+				}
+		<?php if ( strlen( $add_cookies ) > 0 ) { ?>
+			var add_cookies = '<?php echo $add_cookies; ?>'.split( ',' );
+			for ( i = 0; i < add_cookies.length; i++ ) {
+				document.cookie=add_cookies[i] + "; path=/";
+			} <?php } ?>
+			<?php if ( isset( $add_js ) ) { echo str_replace( array( "\r", "\n" ), '', $add_js ); } ?> </script> <?php
 	}
 
 	function debug() {
